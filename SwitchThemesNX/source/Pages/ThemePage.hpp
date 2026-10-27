@@ -52,10 +52,10 @@ class ThemesPage : public IPage
 
 		std::vector<std::string> SelectedFiles;
 		
-		const std::string CommandsTextNormal = "(A): Install    (Y): Multiselect    (L)/(R): Previous/Next page";
-		const std::string CommandsTextFolder = "(A): Open folder    (L)/(R): Previous/Next page";
-		const std::string CommandsTextWithOptions = "(A): Install    (X): Options    (Y): Multiselect    (L)/(R): Previous/Next page";
-		const std::string CommandsTextSelected = "(A): Add/Remove to selection    (Y): Clear selection   (+): Install selected";
+		const std::string CommandsTextNormal = "(A): 安装    (Y): 多选    (L)/(R): 上一页/下一页";
+		const std::string CommandsTextFolder = "(A): 打开文件夹    (L)/(R): 上一页/下一页";
+		const std::string CommandsTextWithOptions = "(A): 安装    (X): 选项    (Y): 多选    (L)/(R): 上一页/下一页";
+		const std::string CommandsTextSelected = "(A): 添加/移除选中项    (Y): 清除选择   (+): 安装所选";
 
 		int LimitLoad = 25;
 

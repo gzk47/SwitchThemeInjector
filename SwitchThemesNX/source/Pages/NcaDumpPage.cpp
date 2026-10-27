@@ -31,7 +31,7 @@ static void WriteExtractedVersion()
 
 NcaDumpPage::NcaDumpPage()
 {
-	Name = "Extract home menu";
+	Name = "提取主菜单";
 }
 
 void NcaDumpPage::Render(int X, int Y)
@@ -40,35 +40,35 @@ void NcaDumpPage::Render(int X, int Y)
 	ImGui::PushFont(font30);
 
 	ImGui::TextWrapped(
-		"This page allows extracting the RomFS of the home menu and related titles.\n\n"
-		"This option allows extracting the common szs files (for example, ResidentMenu.szs) to your SD card so you can create custom layouts. For simply installing themes you do not need this feature, it is done automaticaly done during installation."
+		"此页面允许提取主菜单的RomFS和相关标题。\n\n"
+		"此选项允许将常见的szs文件 (例如，ResidentMenu.szs) 提取到SD卡中，以便您可以创建自定义布局。对于不需要此功能的简单安装主题，它会在安装过程中自动完成。"
 	);
 
-	if (ImGui::Button("Extract szs layout files"))
+	if (ImGui::Button("提取主菜单"))
 	{
 		PushFunction([]() 
 		{
 			try 
 			{
-				if (fs::Exists(fs::path::SystemDataFolder + "extracted/"))
-					fs::DeleteDirectory(fs::path::SystemDataFolder + "extracted/");
+				if (fs::Exists(fs::path::SystemDataFolder + "已提取/"))
+					fs::DeleteDirectory(fs::path::SystemDataFolder + "已提取/");
 
-				DisplayLoading("Extracting qlaunch...");
-				WriteExtracted("extracted/qlaunch", RomfsCache::GetContent(ThemeTargetInfo::QlaunchID));
+				DisplayLoading("提取 qlaunch...");
+				WriteExtracted("已提取/qlaunch", RomfsCache::GetContent(ThemeTargetInfo::QlaunchID));
 
-				DisplayLoading("Extracting playerselect...");
-				WriteExtracted("extracted/playerselect", RomfsCache::GetContent(ThemeTargetInfo::PslID));
+				DisplayLoading("正在提取玩家选择...");
+				WriteExtracted("已提取/玩家选择", RomfsCache::GetContent(ThemeTargetInfo::PslID));
 
-				DisplayLoading("Extracting mypage...");
-				WriteExtracted("extracted/mypage", RomfsCache::GetContent(ThemeTargetInfo::UserPageID));
+				DisplayLoading("正在提取我的页面...");
+				WriteExtracted("已提取/我的页面", RomfsCache::GetContent(ThemeTargetInfo::UserPageID));
 
 				WriteExtractedVersion();
 
-				Dialog("The files have been extracted to the themes/systemData/extracted/ folder on your SD card.");
+				Dialog("文件已提取到你的SD卡 themes/systemData/extracted/ 的文件夹。");
 			}
 			catch (const std::exception& ex)
 			{
-				DialogBlocking("Error while extracting the layout files: " + std::string(ex.what()));
+				DialogBlocking("提取布局文件时出错: " + std::string(ex.what()));
 			}
 		});
 	}
@@ -76,9 +76,9 @@ void NcaDumpPage::Render(int X, int Y)
 	ImGui::NewLine();
 
 	ImGui::TextWrapped(
-		"If you need the complete set of files of the home menu you can extract the raw NCA. To extract this you will need hactool or similar software on your computer."
+		"如果您需要主菜单的完整文件集，可以提取原始NCA。要提取此信息，您需要在电脑上安装hactool或类似软件"
 	);
-	if (ImGui::Button("Extract raw NCA files"))
+	if (ImGui::Button("提取原始NCA文件"))
 	{
 		PushFunction([]()
 			{
@@ -98,11 +98,11 @@ void NcaDumpPage::Render(int X, int Y)
 					nca = hactool::GetNca(ThemeTargetInfo::UserPageID);
 					fs::WriteFile(fs::path::SystemDataFolder + "nca/" + ThemeTargetInfo::TitleIdToString(ThemeTargetInfo::UserPageID) + ".nca", nca);
 
-					Dialog("The files have been extracted to the themes/systemData/nca folder on your SD card.");
+					Dialog("文件已提取到你的SD卡 themes/systemData/nca 的文件夹。");
 				}
 				catch (const std::exception& ex)
 				{
-					DialogBlocking("Error while extracting the layout files: " + std::string(ex.what()));
+					DialogBlocking("提取布局文件时出错: " + std::string(ex.what()));
 				}
 			});
 	}

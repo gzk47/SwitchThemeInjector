@@ -15,7 +15,7 @@ static std::vector<RemoteInstall::Provider> Providers;
 static inline void AssertInitialized() 
 {
     if (!Initialized)
-        throw std::runtime_error("RemoteInstall::API is not initialized");
+        throw std::runtime_error("RemoteInstall::API未初始化");
 }
 
 namespace RemoteInstall::API
@@ -38,7 +38,7 @@ namespace RemoteInstall::API
         j.at("themes").get_to(p.Entries);
 
         if (p.Entries.size() == 0)
-            throw std::runtime_error("The server did not return any themes");
+            throw std::runtime_error("服务器未返回任何主题");
 
         if (j.count("groupname") && j["groupname"].is_string()) {
             j.at("groupname").get_to(p.GroupName);
@@ -50,7 +50,7 @@ std::string RemoteInstall::API::MakeUrl(const std::string& provider, const std::
 {
     auto p = provider.find(IdMarker);
     if (p == std::string::npos)
-        throw std::runtime_error("Marker not found in provider string");
+        throw std::runtime_error("提供程序字符串中未找到标识符");
 
     std::string res = provider;
     return res.replace(p, IdMarker.length(), ID);
@@ -80,10 +80,10 @@ static nlohmann::json ApiGet(const std::string& url)
         throw std::runtime_error(curl_easy_strerror(res));
 
     if (result.size() == 0)
-        throw std::runtime_error("Received empty response");
+        throw std::runtime_error("收到空响应");
 
     if (result[0] != '{')
-        throw std::runtime_error("Received invalid JSON");
+        throw std::runtime_error("收到无效的JSON");
 
 #ifndef __SWITCH__
     std::string StringResponse(result.begin(), result.end());
@@ -110,14 +110,14 @@ void RemoteInstall::API::ReloadProviders()
         auto json = nlohmann::json::parse(fs::OpenFile(fs::path::ProvidersFile));
         
         if (!json.is_array()) 
-            throw std::runtime_error("Wrong file format");
+            throw std::runtime_error("文件格式无效");
 
         for (const auto& elem : json)
             Providers.push_back({ elem["name"], elem["url"], elem.count("static") ? elem["static"].get<bool>() : false });
     }
     catch (std::exception &ex)
     {
-        LOGf("Failed loading SD providers : %s", ex.what());
+        LOGf("加载SD提供程序失败 : %s", ex.what());
     }
 }
 
@@ -147,7 +147,7 @@ void RemoteInstall::API::Initialize()
     CURLcode res = curl_global_init(CURL_GLOBAL_DEFAULT);
     if (res)
     {
-        LOGf("Curl init failed : %d", res);
+        LOGf("Curl初始化失败 : %d", res);
         return;
     }
     Initialized = true;
@@ -172,7 +172,7 @@ CURL* RemoteInstall::API::Util::EasyGET(const std::string& url, std::vector<u8>&
 {
     CURL* curl = curl_easy_init();
     if (!curl)
-        throw std::runtime_error("curl_easy_init failed !");
+        throw std::runtime_error("curl_easy_init 失败 !");
 
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);

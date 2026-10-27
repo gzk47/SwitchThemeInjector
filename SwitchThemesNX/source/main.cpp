@@ -121,8 +121,8 @@ void DisplayLoading(std::initializer_list<std::string> lines)
 
 void FatalError(std::string message)
 {
-	LOGf("Fatal error: %s\n", message.c_str());
-	DialogBlocking("Fatal error: " + message + "\n\nThe application will close");
+	LOGf("致命错误: %s\n", message.c_str());
+	DialogBlocking("致命错误: " + message + "\n\n应用程序将关闭");
 	exit(-1);
 }
 
@@ -148,10 +148,10 @@ static void RenderDebugOverlay()
 	auto text = std::format("FPS: {}", fpsValue);
 	dlist->AddText(ImVec2{0, 0}, 0xffffffff, text.c_str());
 
-	text = std::format("Pages: {} PopList: {}", Pages.size(), PopList.size());
+	text = std::format("页面: {} 列表: {}", Pages.size(), PopList.size());
 	dlist->AddText(ImVec2{0, 20}, 0xffffffff, text.c_str());
 	
-	text = std::format("Images: {}", RenderImage::DebugLoadedImages());
+	text = std::format("图片: {}", RenderImage::DebugLoadedImages());
 	dlist->AddText(ImVec2{0, 40}, 0xffffffff, text.c_str());
 
 	size_t cacheSize;
@@ -160,7 +160,7 @@ static void RenderDebugOverlay()
 
 	ImageCache::DebugInformation(cacheSize, cacheCount, cachePercent);
 
-	text = std::format("Cache: {} bytes ({} images, {:.2f}%)", cacheSize, cacheCount, cachePercent);
+	text = std::format("缓存: {} bytes ({} 图片, {:.2f}%)", cacheSize, cacheCount, cachePercent);
 	dlist->AddText(ImVec2{ 0, 60 }, 0xffffffff, text.c_str());
 }
 
@@ -223,7 +223,7 @@ void PushPageBlocking(IUIControlObj* page)
 {
 	if (IsRendering)
 	{
-		throw std::runtime_error("Attempted to push a blocking page while rendering");
+		throw std::runtime_error("渲染过程中尝试推送阻塞页面");
 	}
 
 	PushPage(page);
@@ -240,7 +240,7 @@ class QuitPage : public IPage
 	public:
 		QuitPage()
 		{
-			Name = "Quit";
+			Name = "退出";
 		}	
 		
 		void Render(int X, int Y) override {}
@@ -319,13 +319,13 @@ static void SetupSysVer()
 	setsysInitialize();
 	SetSysFirmwareVersion firmware;
 
-	static_assert(sizeof(firmware.version_hash) == sizeof(hos::VersionHash), "Version hash size mismatch");
+	static_assert(sizeof(firmware.version_hash) == sizeof(hos::VersionHash), "版本哈希大小不匹配");
 
 	auto res = setsysGetFirmwareVersion(&firmware);
 	if (R_FAILED(res))
 	{
 		setsysExit();
-		DialogBlocking("Could not get sys ver res=" + std::to_string(res));
+		DialogBlocking("无法获取系统版本，结果=" + std::to_string(res));
 		return;
 	}
 	
@@ -351,7 +351,7 @@ int main(int argc, char **argv)
 	PlatformAfterInit();
 
 	SetupSysVer();
-	DisplayLoading("Loading system info...");
+	DisplayLoading("正在加载系统信息...");
 
 	fs::EnsureThemesFolderExists();
 	SetCfwFolder();
@@ -367,10 +367,10 @@ int main(int argc, char **argv)
 		{
 			// We don't have rendering here so at most we can show a yes/no dialog.
 			if (YesNoPage::Ask(
-				"You are missing home menu patches needed for lock screen themes. If you install a theme that is not compatibile it will cause your console to crash on boot.\n\n"
-				"The theme installer can download these patches automatically.\nDo you want to open the download page?\n\n",
-				"Cancel installation and open patch settings",
-				"Continue installing anyway (not recommended)"
+				"您缺少锁屏主题所需的主菜单补丁。如果你安装了不兼容的主题，它将导致你的主机在启动时崩溃。\n\n"
+				"主题安装程序可以自动下载这些补丁。\n您是否要打开下载页面？\n\n",
+				"取消安装并打开补丁设置",
+				"继续安装（不推荐）"
 			))
 			{
 				goto SKIP_ARGUMENTS;

@@ -23,17 +23,17 @@ void CfwSelectPage::Render(int X, int Y)
 	if (Folders.size() == 0)
 	{
 		ImGui::PushFont(font30);
-		Utils::ImGuiCenterString("Couldn't find the Atmosphere folder.");
+		Utils::ImGuiCenterString("无法找到Atmosphere文件夹。");
 		ImGui::PopFont();
 		ImGui::NewLine();
 		ImGui::TextWrapped(
-			"Make sure you have the \"atmosphere\" folder in the root of your sd card.\n\n"
-			"If you do have the atmosphere folder, there is probably an issue with your sd card.\nCheck for corruption or reinstall your CFW.\n");
+			"请确保您的SD卡根目录中有\"atmosphere\"文件夹。\n\n"
+			"如果文件夹存在，可能是您的SD卡有问题。\n");
 	}	
 	else 
 	{
 		// In practice this codepath is not used anymore.
-		Utils::ImGuiCenterString("Multiple cfw folders detected, which one do you want to use ?");
+		Utils::ImGuiCenterString("检测到多个cfw文件夹，您要使用哪一个？");
 
 		ImGui::PushFont(font30);
 		ImGui::SetCursorPos({ (float)XCursorBtn, ImGui::GetCursorPosY() + 30 });
@@ -52,7 +52,7 @@ void CfwSelectPage::Render(int X, int Y)
 	}
 
 	ImGui::NewLine();
-	if (Utils::ImGuiCenterButton("Close this application"))
+	if (Utils::ImGuiCenterButton("关闭此应用程序"))
 		App::Quit();
 
 	Utils::ImGuiSetWindowScrollable();

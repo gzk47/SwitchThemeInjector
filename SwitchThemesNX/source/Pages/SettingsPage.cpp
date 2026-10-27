@@ -36,7 +36,7 @@ namespace
 
 SettingsPage::SettingsPage()
 {
-	Name = "Settings";
+	Name = "设置";
 	ReloadSysmoduleInfo();
 
 	if (sysmoduleInstalled && bundledSysmodule && *sysmoduleInstalled < *bundledSysmodule)
@@ -61,7 +61,7 @@ void SettingsPage::ReloadSysmoduleInfo()
 		}
 		catch (const std::exception& ex)
 		{
-			LOGf("Error reading sysmodule version: %s", ex.what());
+			LOGf("读取系统模块版本时出错: %s", ex.what());
 			sysmoduleInstalled = std::nullopt;
 		}
 	}
@@ -82,7 +82,7 @@ void SettingsPage::ReloadSysmoduleInfo()
 		}
 		catch (const std::exception& ex)
 		{
-			LOGf("Error reading bundled sysmodule version: %s", ex.what());
+			LOGf("读取捆绑的系统模块版本时出错: %s", ex.what());
 			bundledSysmodule = std::nullopt;
 		}
 	}
@@ -96,7 +96,7 @@ bool SettingsPage::InstallSysmodule()
 {
 	if (!bundledSysmodule)
 	{
-		Dialog("Failed to install the sysmodule. This version of the theme installer was built without the sysmodule binary.");
+		Dialog("系统模块安装失败。此主题安装程序版本未包含系统模块二进制文件。");
 		return false;
 	}
 
@@ -108,13 +108,13 @@ bool SettingsPage::InstallSysmodule()
 		fs::WriteFile(fs::path::FsMitmFolder() + SYSMODULE_ID "/flags/boot2.flag", std::vector<u8>{ 'a' });
 		
 		ReloadSysmoduleInfo();
-		Dialog("The sysmodule has been installed. Restart your console to apply the changes.");
+		Dialog("系统模块已安装。重启您的主机以应用更改。");
 		
 		return true;
 	}
 	catch (const std::exception& ex)
 	{
-		Dialog("Error installing sysmodule: "s + ex.what());
+		Dialog("安装系统模块时出错: "s + ex.what());
 		return false;
 	}
 }
@@ -130,34 +130,34 @@ bool SettingsPage::RemoveSysmodule(bool dialogs)
 		ReloadSysmoduleInfo();
 
 		if (dialogs)
-			Dialog("The sysmodule has been uninstalled. Restart your console to apply the changes.");
+			Dialog("系统模块已卸载。重启您的主机以应用更改。");
 
 		return true;
 	}
 	catch (const std::exception& ex)
 	{
-		Dialog("Error uninstalling sysmodule: "s + ex.what());
+		Dialog("卸载系统模块时出错: "s + ex.what());
 		return false;
 	}
 }
 
 void SettingsPage::UISysmoduleAlreadyInstalled() 
 {
-	ImGui::PushStyleColor(ImGuiCol_Text, Colors::Highlight);
-	ImGui::Text("The sysmodule v%d is currently installed.", *sysmoduleInstalled);
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.00f, 0.65f, 0.60f, 1.00f)); // 青绿色
+	ImGui::Text("系统模块 v%d 当前已安装。", *sysmoduleInstalled);
 	ImGui::PopStyleColor();
 	ImGui::SameLine();
-	if (ImGui::Button("Uninstall"))
+	if (ImGui::Button("卸载"))
 		PushFunction([]() { RemoveSysmodule(true); });
 }
 
 void SettingsPage::UISysmoduleUpdateAvailable() 
 {
-	ImGui::PushStyleColor(ImGuiCol_Text, Colors::Highlight);
-	ImGui::Text("The sysmodule v%d is currently installed. A new version is available.", *sysmoduleInstalled);
+	ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.00f, 0.65f, 0.60f, 1.00f)); // 青绿色
+	ImGui::Text("系统模块 v%d 当前已安装。有新版本可供使用。", *sysmoduleInstalled);
 	ImGui::PopStyleColor();
 
-	if (ImGui::Button("Uninstall"))
+	if (ImGui::Button("卸载"))
 		PushFunction([]() { RemoveSysmodule(true); });
 	
 	// Cursor hack, this should be the first item
@@ -167,7 +167,7 @@ void SettingsPage::UISysmoduleUpdateAvailable()
 
 	// TODO: actually due to imgui handling events together as our tab manager using the dpan right input to switch to the settings page will focus this instead
 	// It's an edge case and fixing it is probably more trouble than it's worth.
-	if (ImGui::Button("Update now"))
+	if (ImGui::Button("立即更新"))
 		PushFunction([]() { InstallSysmodule(); });
 
 	focusItemPreventsLeft = ImGui::GetFocusID() == ImGui::GetCurrentWindow()->DC.LastItemId;
@@ -176,18 +176,18 @@ void SettingsPage::UISysmoduleUpdateAvailable()
 void SettingsPage::UISysmoduleBuildMissing()
 {
 	ImGui::PushStyleColor(ImGuiCol_Text, Colors::Red);
-	ImGui::TextWrapped("This version of the theme installer does not contain the sysmodule binary.");
+	ImGui::TextWrapped("此主题安装程序版本不包含 sysmodule 二进制文件。");
 	ImGui::PopStyleColor();
 }
 
 void SettingsPage::UISysmoduleNotInstalled() 
 {
 	ImGui::PushStyleColor(ImGuiCol_Text, Colors::Red);
-	ImGui::Text("The sysmodule is currently not installed.");
+	ImGui::Text("系统模块当前未安装。");
 	ImGui::PopStyleColor();
 
 	ImGui::SameLine();
-	if (ImGui::Button("Install now"))
+	if (ImGui::Button("立即安装"))
 		PushFunction([]() { InstallSysmodule(); });
 }
 
@@ -214,10 +214,10 @@ void SettingsPage::Render(int X, int Y)
 	ImGui::PushFont(font25);
 
 	ImGui::PushFont(font30);
-	ImGui::TextUnformatted("Update detection sysmodule v3");
+	ImGui::TextUnformatted("更新检测系统模块 v3");
 	ImGui::PopFont();
 
-	ImGui::TextWrapped("This sysmodule automatically removes themes when the system firmware changes. This prevents crashes after updates but you still need to remove leftover files from the uninstall page after updating.");
+	ImGui::TextWrapped("此系统模块会在系统固件更新时自动移除主题。这可以防止更新后出现异常，但更新后您仍需要从卸载页面删除残留文件。");
 	if (sysmoduleInstalled)
 	{
 		if (!bundledSysmodule)
@@ -228,7 +228,7 @@ void SettingsPage::Render(int X, int Y)
 		else if (*sysmoduleInstalled < *bundledSysmodule) 
 		{
 			UISysmoduleUpdateAvailable();
-			ImGui::TextWrapped("This update fixes a number of bugs reported by users.");
+			ImGui::TextWrapped("此更新修复了用户报告的多个错误。");
 		}
 		else
 			UISysmoduleAlreadyInstalled();
@@ -249,22 +249,22 @@ void SettingsPage::Render(int X, int Y)
 	ImGui::NewLine();
 
 	ImGui::PushFont(font30);
-	ImGui::TextUnformatted("NXTheme settings");
+	ImGui::TextUnformatted("NX主题设置");
 	ImGui::PopFont();
 
-	ImGui::TextWrapped("These settings only apply for installing nxthemes and are not saved, you have to switch them back every time you launch this app");
+	ImGui::TextWrapped("这些设置仅用于安装 nxthemes，不会被保存。每次启动此应用时，您都需要重新切换它们。");
 
-	ImGui::Text("Home menu layout compatibility options");
-	ImGui::RadioButton("Decide automatically (default)", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Default);
-	ImGui::RadioButton("Force original home menu applet icons (firmware <= 10.0)", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Firmware10);
-	ImGui::RadioButton("Force home menu layout with the NS online icon (firmware 11.0)", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Firmware11);
-	ImGui::RadioButton("Do not apply compatibility fixes", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::DisableFixes);
+	ImGui::Text("主页菜单布局兼容性选项");
+	ImGui::RadioButton("自动决定 (默认)", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Default);
+	ImGui::RadioButton("强制使用原始主菜单小程序图标 (固件 <= 10.0)", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Firmware10);
+	ImGui::RadioButton("强制使用带NS在线图标的主菜单布局 (固件 11.0)", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Firmware11);
+	ImGui::RadioButton("不应用兼容性修复", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::DisableFixes);
 
 	ImGui::NewLine();
 
-	ImGui::Text("Layout parts options");
-	ImGui::Checkbox("Enable custom icons", &Settings::UseIcons);
-	ImGui::Checkbox("Enable extra layouts (eg. common.szs)", &Settings::UseCommon);
+	ImGui::Text("布局部件选项");
+	ImGui::Checkbox("启用自定义图标", &Settings::UseIcons);
+	ImGui::Checkbox("启用额外布局（例如：common.szs）", &Settings::UseCommon);
 
 	ImGui::NewLine();
 

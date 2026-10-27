@@ -19,7 +19,7 @@ ThemesPage::ThemesPage() : lblPage("")
 	if (UseLowMemory)
 		LimitLoad = 15;
 
-	Name = "Themes";
+	Name = "主题";
 	lblCommands = CommandsTextNormal.c_str();
 
 	RefreshThemesList();
@@ -27,7 +27,7 @@ ThemesPage::ThemesPage() : lblPage("")
 
 void ThemesPage::RefreshThemesList()
 {
-	DisplayLoading("Loading themes list...");
+	DisplayLoading("正在加载主题列表...");
 	ClearSelection();
 	SetPage(-1);
 	CursorMemory.clear();
@@ -132,7 +132,7 @@ void ThemesPage::SetPage(int num, int index)
 
 		if (!DirectoryFiles.size())
 		{
-			lblPage = CurrentDir + " There are no files in this folder. Press B to go back.";
+			lblPage = CurrentDir + " 此文件夹中没有文件。按B键返回。";
 			return;
 		}
 		else 
@@ -141,7 +141,7 @@ void ThemesPage::SetPage(int num, int index)
 			if (baseIndex >= DirectoryFiles.size())
 			{
 				// This shouldn't happen
-				lblPage = "Error page out of bounds";
+				lblPage = "页面超出范围错误";
 				return;
 			}
 
@@ -176,16 +176,16 @@ void ThemesPage::Render(int X, int Y)
 	if (DisplayEntries.size() == 0) {
 		if (CurrentDir != fs::path::ThemesFolder)
 		{
-			ImGui::TextWrapped("This folder is empty.");
+			ImGui::TextWrapped("这个文件夹是空的。");
 
-			if (ImGui::Button("Go to the previous folder"))
+			if (ImGui::Button("转到上一级文件夹"))
 				SetDir(fs::GetParentDir(CurrentDir));
 		}
 		else {
 			ImGui::TextWrapped(
-				"There's nothing here, copy your themes in the themes folder on your sd and try again.\n\n"
-				"If you do have a themes folder in your sd with themes make sure that the name is all lowercase and check your SD for corruption.\n\n"
-				"You can find more themes on themezer.net"
+			"此处没有任何内容，请将主题复制到sd上的themes文件夹中，然后重试。\n\n"
+			"如果你的sd中确实有一个包含主题的主题文件夹，请确保名称全部小写，并检查sd是否损坏。\n\n"
+			"你可以在themezer.net上找到更多主题"
 			);
 		}
 	}
@@ -296,9 +296,9 @@ void ThemesPage::UpdatePageText()
 	std::stringstream ss;
 
 	if (SelectedFiles.size() != 0)
-		ss << "(" << SelectedFiles.size() << " selected) ";
+		ss << "(" << SelectedFiles.size() << " 已选择) ";
 
-	ss << CurrentDir << " - Page " << pageNum + 1 << "/" << pageCount;
+	ss << CurrentDir << " - 页 " << pageNum + 1 << "/" << pageCount;
 
 	lblPage = ss.str();
 
@@ -387,7 +387,7 @@ void ThemesPage::Update()
 
 			if (!entry->Install(false))
 			{
-				Dialog("Installing a theme failed, the process was cancelled");
+				Dialog("安装主题失败，进程已取消");
 				break;
 			}
 
@@ -401,7 +401,7 @@ void ThemesPage::Update()
 		}
 
 		if (!combinedInstallLog.empty())
-			Dialog("The themes were installed, however the following warnings have been generated: \n\n" + combinedInstallLog);
+			Dialog("主题已安装，但生成了以下警告：\n\n" + combinedInstallLog);
 
 		ClearSelection();
 		SetPage(pageNum);		

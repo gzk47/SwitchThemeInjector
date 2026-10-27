@@ -34,8 +34,9 @@ void TabRenderer::Render(int X, int Y)
 	ImGui::SetNextWindowSize(ImVec2(SideRect.z, SideRect.w));
 	Utils::ImGuiSetupWin("TabRenderer", 0, 0, DefaultWinFlags);
 
-	ImGui::GetCurrentWindow()->DrawList->AddRectFilledMultiColor({ SideRect.x, SideRect.y }, { (SideRect.x + SideRect.z), (SideRect.y + SideRect.w) / 2 }, 0xff2d2d2d, 0xff2d2d2d, 0xff353535, 0xff353535);
-	ImGui::GetCurrentWindow()->DrawList->AddRectFilledMultiColor({ SideRect.x, (SideRect.y + SideRect.w) / 2 }, { (SideRect.x + SideRect.z), (SideRect.y + SideRect.w) }, 0xff353535, 0xff353535, 0xff2d2d2d, 0xff2d2d2d);
+	// 侧边栏浅色渐变背景（BGR顺序）
+	ImGui::GetCurrentWindow()->DrawList->AddRectFilledMultiColor({ SideRect.x, SideRect.y }, { (SideRect.x + SideRect.z), (SideRect.y + SideRect.w) / 2 }, 0xfff3f3f3, 0xfff3f3f3, 0xffececec, 0xffececec);
+	ImGui::GetCurrentWindow()->DrawList->AddRectFilledMultiColor({ SideRect.x, (SideRect.y + SideRect.w) / 2 }, { (SideRect.x + SideRect.z), (SideRect.y + SideRect.w) }, 0xffececec, 0xffececec, 0xfff3f3f3, 0xfff3f3f3);
 
 	if (!ControlHasFocus && !ImGui::IsWindowFocused())
 		ImGui::SetWindowFocus();
@@ -56,7 +57,7 @@ void TabRenderer::Render(int X, int Y)
 		bool CurrentSelected = (page == CurrentControl);
 		if (CurrentSelected)
 		{
-			ImGui::PushStyleColor(ImGuiCol_Text, Colors::Highlight); //Font color
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.00f, 0.65f, 0.60f, 1.00f)); // 选中左菜单字体青绿色
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 12);
 		}
 
@@ -64,7 +65,7 @@ void TabRenderer::Render(int X, int Y)
 		if (page->NotificationIcon)
 		{
 			auto len = ImGui::CalcTextSize(page->Name.c_str()).x;
-			ImGui::GetCurrentWindow()->DrawList->AddCircleFilled({ cursor.x + len + 12, cursor.y + 12 }, 5, 0xffc9ff00);
+			ImGui::GetCurrentWindow()->DrawList->AddCircleFilled({ cursor.x + len + 12, cursor.y + 12 }, 5, 0xffc90000);
 		}
 		
 		if (ImGui::Button(page->Name.c_str(), ImVec2(250,0)))
@@ -79,7 +80,7 @@ void TabRenderer::Render(int X, int Y)
 		if (CurrentSelected)
 		{
 			ImGui::PopStyleColor();
-			ImGui::GetCurrentWindow()->DrawList->AddRectFilled({ BaseLabelX, cursor.y }, { BaseLabelX + 4, ImGui::GetCursorPosY() - 10}, 0xffc9ff00);
+			ImGui::GetCurrentWindow()->DrawList->AddRectFilled({ BaseLabelX, cursor.y }, { BaseLabelX + 4, ImGui::GetCursorPosY() - 10}, 0xff99a600); // 左侧边指示条青绿色
 		}
 
 		if (!ControlHasFocus && GImGui->NavId == ImGui::GetID(page->Name.c_str()))
@@ -96,7 +97,8 @@ void TabRenderer::Render(int X, int Y)
 
 	auto dList = ImGui::GetOverlayDrawList();
 	
-	dList->AddText(font40, 40, { TopLine.x ,21 }, 0xffffffff, Title.c_str());
+	// 顶部标题改为黑色 0xff111111，字号30
+	dList->AddText(font40, 30, { TopLine.x ,21 }, 0xff111111, Title.c_str());
 
 	if (UseLowMemory) 
 	{
@@ -107,8 +109,9 @@ void TabRenderer::Render(int X, int Y)
 		dList->AddText(font25, 30, { TopLine.x + titleSize.x + 20 , 30 }, 0xff2020ff, "Applet mode");
 	}
 
-	dList->AddRectFilled(TopLine, TopLine + TopLineSz, 0xffffffff);
-	dList->AddRectFilled(BottomLine, BottomLine + TopLineSz, 0xffffffff);
+	// 分割线改成浅灰色
+	dList->AddRectFilled(TopLine, TopLine + TopLineSz, 0xffcccccc);
+	dList->AddRectFilled(BottomLine, BottomLine + TopLineSz, 0xffcccccc);
 	
 	ImGui::PopFont();
 	Utils::ImGuiCloseWin();
@@ -121,7 +124,7 @@ void TabRenderer::Render(int X, int Y)
 }
 
 TabRenderer::TabRenderer() :
-Title("NXThemes Installer " + Version::Name)
+Title("NX主题安装程序 " + Version::Name)
 {
 	CurrentControl = nullptr;
 }

@@ -7,7 +7,7 @@ RemoteInstall::Worker::BaseWorker::BaseWorker(const std::vector<std::string>& ur
     cm = curl_multi_init();
 
     if (!cm)
-        throw std::runtime_error("curl_multi_init failed");
+        throw std::runtime_error("curl_multi_init 失败");
 
     curl_multi_setopt(cm, CURLMOPT_MAXCONNECTS, MaxSessions * 4);
     curl_multi_setopt(cm, CURLMOPT_MAX_TOTAL_CONNECTIONS, MaxSessions);
@@ -30,7 +30,7 @@ void RemoteInstall::Worker::BaseWorker::Update()
 
     if (CancellationRequested)
     {
-        Errors << "Operation cancelled by the user";
+        Errors << "操作已被用户取消";
         for (auto h : handles)
         {
             curl_multi_remove_handle(cm, h);
@@ -61,13 +61,13 @@ void RemoteInstall::Worker::BaseWorker::Update()
                         Results[index] = {};
                     }
                     else
-                        Errors << "Unknown id " << index; //Can this ever happen ?
+                        Errors << "未知ID " << index; //Can this ever happen ?
                 }
 
                 if (msg->data.result != CURLE_OK)
-                    Errors << " failed: " << curl_easy_strerror(msg->data.result) << "(" << msg->data.result << ")" << std::endl;
+                    Errors << " 失败: " << curl_easy_strerror(msg->data.result) << "(" << msg->data.result << ")" << std::endl;
                 else
-                    Errors << " failed due to handler error" << std::endl;
+                    Errors << " 失败: 处理程序错误" << std::endl;
 
                 OnError(index);
             }
@@ -79,7 +79,7 @@ void RemoteInstall::Worker::BaseWorker::Update()
             curl_easy_cleanup(e);
         }
         else {
-            Errors << "Error: CURLMsg " << msg->msg << std::endl;
+            Errors << "错误: CURL消息 " << msg->msg << std::endl;
         }
     }
 
@@ -107,9 +107,9 @@ void RemoteInstall::Worker::BaseWorker::Render(int X, int Y)
     if (Cancellable)
     {
         if (CancellationRequested)
-            Utils::ImGuiCenterString("Cancelling operation...");
+            Utils::ImGuiCenterString("正在取消操作...");
         else {
-            if (Utils::ImGuiCenterButton("Cancel operation")) {
+            if (Utils::ImGuiCenterButton("取消操作")) {
                 CancellationRequested = true;
             }
         }
@@ -142,7 +142,7 @@ void RemoteInstall::Worker::BaseWorker::UpdateStatusMessage()
            return;
 
     std::stringstream msg;
-    msg << "Downloading data (" << Completed << " of " << urls.size() << ") ...";
+    msg << "正在下载数据 (" << Completed << " / " << urls.size() << ") ...";
     LoadingLine = msg.str();
 }
 

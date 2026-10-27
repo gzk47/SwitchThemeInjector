@@ -18,7 +18,7 @@ using namespace SwitchThemesCommon;
 
 void ThemeEntry::DisplayInstallDialog(const std::string& path)
 {
-	DisplayLoading({ "Installing " + path + " ...", "CFW folder: " + fs::path::CfwFolder() });
+	DisplayLoading({ "正在安装 " + path + " ...", "CFW 目录: " + fs::path::CfwFolder() });
 }
 
 class DummyEntry : public ThemeEntry
@@ -70,16 +70,16 @@ bool ThemeEntry::Install(bool ShowDialogs)
 	}
 	catch (const exception & ex)
 	{
-		DialogBlocking("Error while installing this theme: " + string(ex.what()) + "\n\n" + InstallLog);
+		DialogBlocking("安装此主题时出错: " + string(ex.what()) + "\n\n" + InstallLog);
 		return false;
 	}
 
 	if (ShowDialogs) 
 	{
 		if (InstallLog.empty())
-			DialogBlocking("Done, restart the console to apply the changes");
+			DialogBlocking("完成，重启主机以应用更改");
 		else
-			DialogBlocking("Done, restart the console to apply the changes.\n\nThe following warnings were generated:\n" + InstallLog);
+			DialogBlocking("完成，重启主机以应用更改。\n\n生成了以下警告:\n" + InstallLog);
 
 		// If !ShowDialogs keep the install log so it can be displayed by the caller
 		InstallLog.clear();
@@ -109,7 +109,7 @@ unique_ptr<ThemeEntry> ThemeEntry::FromFile(const std::string& fileName)
 		auto data = fs::OpenFile(fileName);
 
 		if (data.size() == 0)
-			return DummyEntry::CreateError(fileName, "Couldn't open this file");
+			return DummyEntry::CreateError(fileName, "无法打开此文件");
 
 		if (StrEndsWith(fileName, ".ttf"))
 			return make_unique<FontEntry>(fileName, move(data));
@@ -122,16 +122,16 @@ unique_ptr<ThemeEntry> ThemeEntry::FromFile(const std::string& fileName)
 	}
 	catch (std::exception &ex)
 	{
-		auto err = DummyEntry::CreateError(fileName, "Error - Open for details");
+		auto err = DummyEntry::CreateError(fileName, "错误 - 点击查看详情");
 		err->CannotInstallReason = ex.what();
 		return err;
 	}
 	catch (...)
 	{
-		return DummyEntry::CreateError(fileName, "Unknown exception while opening this file");
+		return DummyEntry::CreateError(fileName, "打开此文件时发生未知异常");
 	}
 
-	return DummyEntry::CreateError(fileName, "Unknown file type");
+	return DummyEntry::CreateError(fileName, "未知文件类型");
 }
 
 std::string ThemeEntry::GuessExtension(const std::vector<u8>& binary, std::string_view preferredYaz0)
@@ -156,7 +156,7 @@ std::string ThemeEntry::GuessExtension(const std::vector<u8>& binary, std::strin
 
 unique_ptr<ThemeEntry> ThemeEntry::FromMemory(const std::vector<u8>& binary)
 {
-	std::string error = "Unknown file format";
+	std::string error = "未知文件格式t";
 
 	// new nxtheme format
 	if (zip::IsZip(binary))
@@ -192,7 +192,7 @@ unique_ptr<ThemeEntry> ThemeEntry::FromMemory(const std::vector<u8>& binary)
 		return make_unique<ImageEntry>("", std::vector<u8>(binary));
 
 hande_error:
-	return DummyEntry::CreateError("Error", "Failed to load");
+	return DummyEntry::CreateError("错误", "加载失败");
 }
 
 using namespace ImGui;

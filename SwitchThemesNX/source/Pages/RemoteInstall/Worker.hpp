@@ -32,7 +32,7 @@ namespace RemoteInstall::Worker
 		const std::vector<std::string> urls;
 		std::vector<std::vector<u8>> Results;
 
-		std::string LoadingLine = "Downloading data...";
+		std::string LoadingLine = "正在下载数据...";
 		
 		std::stringstream Errors;
 		bool appendUrlToError = true;

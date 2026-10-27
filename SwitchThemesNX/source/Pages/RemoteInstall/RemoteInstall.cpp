@@ -63,7 +63,7 @@ void RemoteInstall::BeginType(const RemoteInstall::Provider& provider, FixedType
     else if (type == FixedTypes::Recent)
         BeginRecent(provider);
     else
-        throw std::runtime_error("Unsupported remote install type");
+        throw std::runtime_error("不支持的远程安装类型");
 }
 
 void RemoteInstall::BeginRandom(const RemoteInstall::Provider& provider)

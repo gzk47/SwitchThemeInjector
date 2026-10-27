@@ -16,7 +16,7 @@ namespace
 		}
 		catch (const std::exception& ex)
 		{
-			Dialog("Error uninstalling theme: " + std::string(ex.what()));
+			Dialog("卸载主题时出错: " + std::string(ex.what()));
 			return false;
 		}
 		return true;
@@ -31,7 +31,7 @@ namespace
 		}
 		catch (const std::exception& ex)
 		{
-			Dialog("Error removing boot logo file: " + std::string(ex.what()));
+			Dialog("删除启动标志文件时出错: " + std::string(ex.what()));
 			return false;
 		}
 		return true;
@@ -45,7 +45,7 @@ namespace
 		}
 		catch (const std::exception& ex)
 		{
-			Dialog("Error while removing lockscreen patches: " + std::string(ex.what()));
+			Dialog("移除锁屏补丁时出错: " + std::string(ex.what()));
 			return false;
 		}
 		return true;
@@ -54,7 +54,7 @@ namespace
 
 UninstallPage::UninstallPage()
 {
-	Name = "Uninstall theme";
+	Name = "卸载主题";
 }
 
 void UninstallPage::Render(int X, int Y)
@@ -62,58 +62,58 @@ void UninstallPage::Render(int X, int Y)
 	Utils::ImGuiSetupPage(this, X, Y);
 	ImGui::PushFont(font30);
 
-	ImGui::TextWrapped("Use these options to uninstall the currently installed themes.");
+	ImGui::TextWrapped("使用这些选项卸载当前已安装的主题。");
 
 	ImGui::PushStyleColor(ImGuiCol_Button, u32(0x5B700009f));
 
-	if (Utils::ImGuiCenterButton("Remove the current theme", 550))
+	if (Utils::ImGuiCenterButton("移除当前主题", 550))
 	{
 		PushFunction([]() {
 			if (!YesNoPage::Ask(
-				"This will remove the installed theme for all the supported home menu parts.\n"
-				"Do you want to continue ?"
+				"这将删除所有支持的主菜单部分的已安装主题。\n"
+				"你想继续吗？"
 			))
 				return;
 
-			DisplayLoading("Loading...");
+			DisplayLoading("加载中...");
 
 			if (RemoveTheme(false))
-				Dialog("Done, all the installed themes have been removed, restart your console to apply the changes");
+				Dialog("已完成，所有已安装的主题均已移除，请重启您的控制台以应用更改");
 		});
 	}
 	PAGE_RESET_FOCUS;
 
-	if (Utils::ImGuiCenterButton("Remove the hekate boot logo", 550))
+	if (Utils::ImGuiCenterButton("移除Hekate启动标志", 550))
 	{
 		PushFunction([]() {
 			if (!YesNoPage::Ask(
-				"This will remove the custom hekate boot screen.\n"
-				"Do you want to continue ?"
+				"这将移除自定义的hekate启动屏幕。\n"
+				"你想继续吗？"
 			))
 				return;
 
 			if (RemoveBootlogo())
-				Dialog("The hekate boot logo has been removed, restart your console to apply the changes");
+				Dialog("hekate启动标志已移除，请重启您的主机以应用更改");
 		});
 	}
 
 	ImGui::NewLine();
-	ImGui::TextWrapped("In case you're facing unexpected crashes, use the following option to remove everything related to themes including fsmitm folders, the version check sysmodule and theme patches.");
+	ImGui::TextWrapped("如果您遇到意外报错，请使用以下选项删除与主题相关的一切内容，包括fsmitm文件夹、版本检查sysmodule和主题补丁。");
 
-	if (Utils::ImGuiCenterButton("Uninstall everything", 550))
+	if (Utils::ImGuiCenterButton("卸载所有内容", 550))
 	{
 		PushFunction([]() {
 			if (!YesNoPage::Ask(
-				"This will remove everything related to custom themes, such as:\n"
-				"- The currently installed theme\n"
-				"- Applied theme patches\n"
-				"- The theme update check sysmodule\n"
-				"- Any custom hekate boot logo\n\n"
-				"Do you want to continue ?"
+				"这将删除与自定义主题相关的一切内容，例如:\n"
+				"- 当前已安装的主题\n"
+				"- 应用主题补丁\n"
+				"- 主题更新检查系统模块\n"
+				"- 任何自定义Hekate启动标志\n\n"
+				"你想继续吗？"
 			))
 				return;
 
-			DisplayLoading("Clearing custom themes data...");
+			DisplayLoading("清除自定义主题数据...");
 
 			bool success = SettingsPage::RemoveSysmodule(false);
 			success &= RemoveTheme(true);
@@ -123,8 +123,8 @@ void UninstallPage::Render(int X, int Y)
 			if (success)
 			{
 				Dialog(
-					"Done, everything theme-related has been removed, restart your console to apply the changes.\n"
-					"This removed any home menu patches as well, you should restart this app before installing themes again."
+					"已完成，所有与主题相关的内容均已移除，请重启控制台以应用更改。\n"
+					"这还会移除所有主页菜单补丁，安装主题前你应该重新启动此应用。"
 				);
 			}
 		});

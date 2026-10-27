@@ -32,10 +32,10 @@ void ExternalInstallPage::Render(int X, int Y)
 		if (installationErrorMessage.size())
 			Utils::ImGuiCenterString(installationErrorMessage);
 		else
-			Utils::ImGuiCenterString("Installation completed.");
+			Utils::ImGuiCenterString("安装完成。");
 
 		ImGui::SetCursorPosY(SCR_H - 180);
-		auto res = Utils::ImGuiCenterButtons({ "Exit to homebrew launcher" ,"Reboot" });
+		auto res = Utils::ImGuiCenterButtons({ "退出到自制启动器" ,"重启" });
 		Utils::ImGuiSelectItemOnce(true);
 		if (res == 0)
 		{
@@ -49,10 +49,10 @@ void ExternalInstallPage::Render(int X, int Y)
 	else
 	{
 		ImGui::SetCursorPosY(10);
-		Utils::ImGuiCenterString("Install theme(s) from external source");
+		Utils::ImGuiCenterString("从外部来源安装主题");
 
 		ImGui::SetCursorPosY(SCR_H - 50);
-		auto choice = Utils::ImGuiCenterButtons({ "Confirm install (+ button)", "Cancel" });
+		auto choice = Utils::ImGuiCenterButtons({ "确认安装（+按钮）", "取消" });
 		if (choice == 0) installationRequested = true;
 		else if (choice == 1) cancellationRequested = true;
 
@@ -91,13 +91,13 @@ void ExternalInstallPage::Update()
 	{
 		processStarted = true;
 
-		DisplayLoading("Installing...");
+		DisplayLoading("正在安装...");
 		for (int i = 0; i < (int)ArgEntries.size(); i++)
 		{
 			if (!ArgEntries[i]->Install(false))
 			{
 				if (installationErrorMessage.empty())
-					installationErrorMessage = "The following themes failed to install:\n";
+					installationErrorMessage = "以下主题安装失败:\n";
 
 				installationErrorMessage.append("- " + ArgEntries[i]->GetPath() + "\n");
 			}
