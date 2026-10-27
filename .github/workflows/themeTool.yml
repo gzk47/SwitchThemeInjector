@@ -1,16 +1,16 @@
 name: NXThemeTool
 on:
   workflow_dispatch:
-  push:
-    branches: [ master ]
-    paths:
-      - SwitchThemesCommon/**
-      - NxThemeTool/**
-  pull_request:
-    branches: [ master ]
-    paths:
-      - SwitchThemesCommon/**
-      - NxThemeTool/**
+#  push:
+#    branches: [ master ]
+#    paths:
+#      - SwitchThemesCommon/**
+#      - NxThemeTool/**
+#  pull_request:
+#    branches: [ master ]
+#    paths:
+#      - SwitchThemesCommon/**
+#      - NxThemeTool/**
 jobs:
   Build:
     runs-on: windows-latest
